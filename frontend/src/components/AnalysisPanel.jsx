@@ -1,13 +1,16 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import Speedometer from "./Speedometer"
 
 export default function AnalysisPanel({ analysis, loading, error, onApplyOptimized }) {
   const [showOptimized, setShowOptimized] = useState(false)
+  const [activeTab, setActiveTab] = useState("time") // time or space
 
   if (loading) {
     return (
       <div className="analysis-panel center">
         <div className="spinner"></div>
         <p className="loading-text">Analyzing your code...</p>
+        <p className="loading-subtext">This may take a few seconds</p>
       </div>
     )
   }
@@ -31,6 +34,20 @@ export default function AnalysisPanel({ analysis, loading, error, onApplyOptimiz
           <div className="empty-icon">🔍</div>
           <h3>Ready to Analyze</h3>
           <p>Write your code and click "Refine Code" to get started</p>
+          <div className="empty-features">
+            <div className="empty-feature">
+              <span>⚡</span>
+              <span>Instant complexity analysis</span>
+            </div>
+            <div className="empty-feature">
+              <span>🐛</span>
+              <span>Error detection</span>
+            </div>
+            <div className="empty-feature">
+              <span>💡</span>
+              <span>Smart suggestions</span>
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -41,37 +58,75 @@ export default function AnalysisPanel({ analysis, loading, error, onApplyOptimiz
       <div className="analysis-header">
         <h2>Analysis Results</h2>
         <div className="analysis-badges">
-          {analysis.errors.length === 0 && (
+          {analysis.errors && analysis.errors.length === 0 && (
             <span className="badge badge-success">✓ No Errors</span>
           )}
-          {analysis.errors.length > 0 && (
+          {analysis.errors && analysis.errors.length > 0 && (
             <span className="badge badge-error">{analysis.errors.length} Error{analysis.errors.length > 1 ? 's' : ''}</span>
           )}
         </div>
       </div>
 
-      {/* Time Complexity */}
-      <div className="analysis-card complexity-card">
-        <div className="card-header">
-          <span className="card-icon">⏱️</span>
-          <h3>Time Complexity</h3>
+      {/* SPEEDOMETER - Code Quality Score */}
+      {analysis.quality_score !== undefined && (
+        <div className="analysis-card speedometer-card">
+          <div className="card-header">
+            <span className="card-icon">🎯</span>
+            <h3>Code Quality Score</h3>
+          </div>
+          <Speedometer score={analysis.quality_score} />
         </div>
-        <div className="complexity-badge">
-          {analysis.time_complexity}
+      )}
+
+      {/* COMPLEXITY TABS - LeetCode Style - ALWAYS SHOW */}
+      <div className="analysis-card complexity-tabs-card">
+        <div className="complexity-tabs">
+          <button 
+            className={`tab-btn ${activeTab === 'time' ? 'tab-active' : ''}`}
+            onClick={() => setActiveTab('time')}
+          >
+            <span className="tab-icon">⏱️</span>
+            Time
+          </button>
+          <button 
+            className={`tab-btn ${activeTab === 'space' ? 'tab-active' : ''}`}
+            onClick={() => setActiveTab('space')}
+          >
+            <span className="tab-icon">💾</span>
+            Space
+          </button>
+        </div>
+        
+        <div className="tab-content">
+          {activeTab === 'time' && (
+            <div className="complexity-display">
+              <div className="complexity-label">Time Complexity</div>
+              <div className="complexity-value">
+                {analysis.time_complexity || "Not analyzed"}
+              </div>
+            </div>
+          )}
+          {activeTab === 'space' && (
+            <div className="complexity-display">
+              <div className="complexity-label">Space Complexity</div>
+              <div className="complexity-value">
+                {analysis.space_complexity || "Not analyzed"}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Errors */}
-      {analysis.errors.length > 0 && (
+      {/* ERRORS */}
+      {analysis.errors && analysis.errors.length > 0 && (
         <div className="analysis-card error-card-section">
           <div className="card-header">
             <span className="card-icon">🐛</span>
             <h3>Errors Found</h3>
           </div>
-          <ul className="error-list">
+          <ul className="bullet-list error-list">
             {analysis.errors.map((e, i) => (
-              <li key={i} className="error-item">
-                <span className="error-bullet">•</span>
+              <li key={i} className="bullet-item error-item">
                 {e}
               </li>
             ))}
@@ -79,17 +134,16 @@ export default function AnalysisPanel({ analysis, loading, error, onApplyOptimiz
         </div>
       )}
 
-      {/* Suggestions */}
-      {analysis.suggestions.length > 0 && (
+      {/* SUGGESTIONS */}
+      {analysis.suggestions && analysis.suggestions.length > 0 && (
         <div className="analysis-card suggestions-card">
           <div className="card-header">
             <span className="card-icon">💡</span>
             <h3>Suggestions</h3>
           </div>
-          <ul className="suggestions-list">
+          <ul className="bullet-list suggestions-list">
             {analysis.suggestions.map((s, i) => (
-              <li key={i} className="suggestion-item">
-                <span className="suggestion-bullet">→</span>
+              <li key={i} className="bullet-item suggestion-item">
                 {s}
               </li>
             ))}
@@ -97,8 +151,8 @@ export default function AnalysisPanel({ analysis, loading, error, onApplyOptimiz
         </div>
       )}
 
-      {/* Optimized Code */}
-      {analysis.optimized_code && (
+      {/* OPTIMIZED CODE */}
+      {analysis.optimized_code && analysis.optimized_code !== "Not available" && (
         <div className="analysis-card optimized-card">
           <div className="card-header">
             <span className="card-icon">✨</span>

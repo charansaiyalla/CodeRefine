@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
-import Landing from "./pages/Landing"
 import Login from "./pages/login"
 import Dashboard from "./pages/Dashboard"
 import EditorPage from "./pages/editor"
+import Landing from "./pages/Landing"
 import "./App.css"
 
 // Protected Route Component

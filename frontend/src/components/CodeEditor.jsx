@@ -2,8 +2,16 @@ import { useState } from "react";
 import Editor from "@monaco-editor/react";
 import "../styles/editor.css";
 
-export default function CodeEditor({ onRefine, code, setCode }) {
+export default function CodeEditor({ onRefine, code, setCode, loading }) {
   const [language, setLanguage] = useState("cpp");
+
+  const handleRefineClick = () => {
+    if (!code.trim()) {
+      alert("Please enter some code");
+      return;
+    }
+    onRefine(code, language);
+  };
 
   return (
     <div className="code-editor-container">
@@ -15,6 +23,7 @@ export default function CodeEditor({ onRefine, code, setCode }) {
             className="language-select"
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
+            disabled={loading}
           >
             <option value="cpp">C++</option>
             <option value="c">C</option>
@@ -23,17 +32,21 @@ export default function CodeEditor({ onRefine, code, setCode }) {
           </select>
 
           <button
-            className="btn-refine"
-            onClick={() => {
-              if (!code.trim()) {
-                alert("Please enter some code");
-                return;
-              }
-              onRefine(code, language);
-            }}
+            className={`btn-refine ${loading ? 'btn-refine-loading' : ''}`}
+            onClick={handleRefineClick}
+            disabled={loading}
           >
-            <span className="btn-icon">🔍</span>
-            Refine Code
+            {loading ? (
+              <>
+                <span className="spinner-btn"></span>
+                Analyzing...
+              </>
+            ) : (
+              <>
+                <span className="btn-icon">🔍</span>
+                Refine Code
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -52,8 +65,9 @@ export default function CodeEditor({ onRefine, code, setCode }) {
             scrollBeyondLastLine: false,
             lineNumbers: 'on',
             roundedSelection: false,
-            readOnly: false,
+            readOnly: loading,
             cursorStyle: 'line',
+            wordWrap: 'on',
           }}
         />
       </div>

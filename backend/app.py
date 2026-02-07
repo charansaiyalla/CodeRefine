@@ -13,20 +13,35 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 # Configure Gemini
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-# List available models
-print("=" * 50)
-print("Available models:")
-try:
-    for model in client.models.list():
-        print(f"  - {model.name}")
-except Exception as e:
-    print(f"Error listing models: {e}")
-print("=" * 50)
-
 @app.route("/ping", methods=["GET"])
 def ping():
     print("✅ Ping received")
     return jsonify({"status": "ok"})
+
+def calculate_quality_score(analysis):
+    """Calculate code quality score (0-100) based on analysis results"""
+    score = 100
+    
+    # Deduct points for errors (max -40)
+    error_count = len(analysis.get('errors', []))
+    score -= min(error_count * 10, 40)
+    
+    # Deduct points for complexity (max -30)
+    time_complexity = analysis.get('time_complexity', '').lower()
+    if 'o(n^3)' in time_complexity or 'o(2^n)' in time_complexity or 'o(n!)' in time_complexity:
+        score -= 30
+    elif 'o(n^2)' in time_complexity:
+        score -= 20
+    elif 'o(n log n)' in time_complexity:
+        score -= 10
+    elif 'o(n)' in time_complexity:
+        score -= 5
+    
+    # Deduct points for suggestions (max -30)
+    suggestion_count = len(analysis.get('suggestions', []))
+    score -= min(suggestion_count * 5, 30)
+    
+    return max(0, min(100, score))
 
 @app.route("/analyze", methods=["POST"])
 def analyze():
@@ -48,11 +63,18 @@ CRITICAL: Return ONLY a JSON object. No markdown, no code blocks, no explanation
 
 The JSON must have this exact structure:
 {{
-  "time_complexity": "O(n) explanation here",
+  "time_complexity": "O(n) - explanation here",
+  "space_complexity": "O(1) - explanation here",
   "errors": ["error 1", "error 2"],
   "suggestions": ["suggestion 1", "suggestion 2"],
   "optimized_code": "the optimized code here"
 }}
+
+Important:
+- time_complexity and space_complexity MUST include Big-O notation and brief explanation
+- errors should be an array of specific issues found (empty array if no errors)
+- suggestions should be an array of improvement recommendations (at least 2-3 if possible)
+- optimized_code should be the improved version of the code
 
 Code to analyze:
 {code}
@@ -67,11 +89,11 @@ Code to analyze:
         
         # Remove markdown code blocks if present
         if text.startswith("```json"):
-            text = text[7:]  # Remove ```json
+            text = text[7:]
         if text.startswith("```"):
-            text = text[3:]  # Remove ```
+            text = text[3:]
         if text.endswith("```"):
-            text = text[:-3]  # Remove trailing ```
+            text = text[:-3]
         
         text = text.strip()
         
@@ -83,7 +105,7 @@ Code to analyze:
             print("❌ No JSON found in response")
             return jsonify({
                 "error": "AI did not return valid JSON",
-                "raw_response": text[:500]  # Send first 500 chars for debugging
+                "raw_response": text[:500]
             }), 500
 
         json_text = text[start:end]
@@ -98,30 +120,39 @@ Code to analyze:
             parsed["suggestions"] = []
         if "time_complexity" not in parsed:
             parsed["time_complexity"] = "Unknown"
+        if "space_complexity" not in parsed:
+            parsed["space_complexity"] = "Unknown"
         if "optimized_code" not in parsed:
             parsed["optimized_code"] = code
+
+        # Calculate quality score
+        parsed["quality_score"] = calculate_quality_score(parsed)
 
         return jsonify(parsed)
     
     except json.JSONDecodeError as e:
         print(f"❌ JSON Parse Error: {str(e)}")
-        print(f"❌ Problematic text: {text[:500]}")
+        print(f"❌ Problematic text: {text[:500] if 'text' in locals() else 'N/A'}")
         return jsonify({
             "error": f"Failed to parse AI response: {str(e)}",
             "time_complexity": "Error",
+            "space_complexity": "Error",
             "errors": ["Unable to analyze code - AI returned invalid format"],
             "suggestions": [],
-            "optimized_code": code
-        }), 200  # Return 200 so frontend can display the error gracefully
+            "optimized_code": code,
+            "quality_score": 0
+        }), 200
     
     except Exception as e:
         print(f"❌ Error: {str(e)}")
         return jsonify({
             "error": str(e),
             "time_complexity": "Error",
+            "space_complexity": "Error",
             "errors": [f"Analysis failed: {str(e)}"],
             "suggestions": [],
-            "optimized_code": code
+            "optimized_code": code,
+            "quality_score": 0
         }), 200
 
 
