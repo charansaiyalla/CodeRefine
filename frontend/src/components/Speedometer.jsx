@@ -5,11 +5,11 @@ export default function Speedometer({ score }) {
   const [animatedScore, setAnimatedScore] = useState(0);
 
   useEffect(() => {
-    // Animate score from 0 to actual score
+    // Animate score from 0 to actual score with smooth easing
     let currentScore = 0;
     const targetScore = Math.min(Math.max(score, 0), 100); // Clamp between 0-100
-    const duration = 2000; // 2 seconds
-    const steps = 60;
+    const duration = 2500; // 2.5 seconds for smoother animation
+    const steps = 80; // More steps for smoother animation
     const increment = targetScore / steps;
     const stepDuration = duration / steps;
 
@@ -137,7 +137,7 @@ export default function Speedometer({ score }) {
           <span>0-40 Needs Work</span>
         </div>
         <div className="legend-item">
-          <span className="legend-dot" style={{ background: '#f59e0b' }}></span>
+          <span className="legend-dot" style={{ background: '#f97316' }}></span>
           <span>40-60 Fair</span>
         </div>
         <div className="legend-item">

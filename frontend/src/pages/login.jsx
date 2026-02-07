@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import "../styles/login.css"
 
@@ -9,6 +9,7 @@ export default function Login() {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [focusedInput, setFocusedInput] = useState(null)
   const navigate = useNavigate()
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -84,7 +85,7 @@ export default function Login() {
 
       localStorage.setItem("auth", "true")
       localStorage.setItem("currentUser", email)
-      localStorage.removeItem("guestMode") // Remove guest mode if they log in
+      localStorage.removeItem("guestMode")
       setIsLoading(false)
       navigate("/dashboard")
     }, 1000)
@@ -100,19 +101,22 @@ export default function Login() {
 
   return (
     <div className="auth-container">
-      {/* LEFT SIDE - BRANDING */}
+      {/* LEFT SIDE - ENHANCED BRANDING */}
       <div className="auth-branding">
         <div className="branding-content">
           <div className="brand-logo">
             <div className="logo-icon">⚡</div>
-            <h1 className="brand-name">CodeRefine</h1>
+            <h1 className="brand-name">SyntaXstitch</h1>
           </div>
+          
           <h2 className="brand-tagline">
-            Transform Your Code with AI
+            Transform Your Code with AI Precision
           </h2>
+          
           <p className="brand-description">
             Analyze, optimize, and refine your code instantly with cutting-edge AI technology. 
-            Get instant feedback on time complexity, errors, and receive intelligent suggestions.
+            Get instant feedback on time complexity, errors, and receive intelligent suggestions 
+            that elevate your development workflow.
           </p>
           
           <div className="features-list">
@@ -120,40 +124,40 @@ export default function Login() {
               <span className="feature-icon">🎯</span>
               <div>
                 <h4>Instant Analysis</h4>
-                <p>Get real-time code insights</p>
+                <p>Get real-time code insights with advanced AI-powered complexity detection</p>
               </div>
             </div>
+            
             <div className="feature-item">
               <span className="feature-icon">⚡</span>
               <div>
                 <h4>AI Optimization</h4>
-                <p>Smart code improvements</p>
+                <p>Smart code improvements that enhance performance and maintainability</p>
               </div>
             </div>
+            
             <div className="feature-item">
               <span className="feature-icon">🚀</span>
               <div>
-                <h4>Multi-Language</h4>
-                <p>C++, Java, Python & more</p>
+                <h4>Multi-Language Support</h4>
+                <p>Comprehensive support for C++, Java, Python, JavaScript, and more</p>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Animated background elements */}
-        <div className="floating-shapes">
-          <div className="shape shape-1"></div>
-          <div className="shape shape-2"></div>
-          <div className="shape shape-3"></div>
-        </div>
       </div>
 
-      {/* RIGHT SIDE - AUTH FORM */}
+      {/* RIGHT SIDE - ENHANCED AUTH FORM */}
       <div className="auth-form-section">
         <div className="auth-form-container">
           <div className="form-header">
             <h2>{isSignup ? "Create Account" : "Welcome Back"}</h2>
-            <p>{isSignup ? "Start optimizing your code today" : "Sign in to continue to CodeRefine"}</p>
+            <p>
+              {isSignup 
+                ? "Start optimizing your code today with AI-powered insights" 
+                : "Sign in to continue your development journey"
+              }
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="auth-form">
@@ -174,7 +178,10 @@ export default function Login() {
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  onFocus={() => setFocusedInput('email')}
+                  onBlur={() => setFocusedInput(null)}
                   disabled={isLoading}
+                  autoComplete="email"
                 />
               </div>
             </div>
@@ -189,7 +196,10 @@ export default function Login() {
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  onFocus={() => setFocusedInput('password')}
+                  onBlur={() => setFocusedInput(null)}
                   disabled={isLoading}
+                  autoComplete={isSignup ? "new-password" : "current-password"}
                 />
               </div>
             </div>
@@ -205,7 +215,10 @@ export default function Login() {
                     placeholder="Confirm your password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    onFocus={() => setFocusedInput('confirm')}
+                    onBlur={() => setFocusedInput(null)}
                     disabled={isLoading}
+                    autoComplete="new-password"
                   />
                 </div>
               </div>

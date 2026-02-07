@@ -1,93 +1,242 @@
-/* ========== SHARP DUOTONE COLOR THEME ========== */
-:root {
-  /* Primary Duotone Colors */
-  --coral-red: #D94C57;
-  --coral-light: #EAC1C7;
-  --coral-dark: #C13844;
-  
-  /* Background Colors - Clean and Flat */
-  --bg-primary: #1A1A1A;
-  --bg-secondary: #2A2A2A;
-  --bg-tertiary: #3A3A3A;
-  --bg-card: #252525;
-  
-  /* Text Colors */
-  --text-primary: #FFFFFF;
-  --text-secondary: #EAC1C7;
-  --text-muted: #999999;
-  --text-dark: #1A1A1A;
-  
-  /* Accent Colors */
-  --accent-success: #22c55e;
-  --accent-error: #D94C57;
-  --accent-warning: #f59e0b;
-  
-  /* Borders - Solid, No Blur */
-  --border-primary: #D94C57;
-  --border-secondary: #3A3A3A;
-  --border-light: #EAC1C7;
-}
+import { useNavigate } from "react-router-dom"
+import "../styles/landing.css"
 
-/* ========== GLOBAL RESET ========== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+export default function Landing() {
+  const navigate = useNavigate()
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-}
+  return (
+    <div className="landing-container">
+      {/* NAVIGATION */}
+      <nav className="landing-nav">
+        <div className="nav-content">
+          <div className="nav-logo">
+            <span className="nav-icon">⚡</span>
+            CodeRefine
+          </div>
+          <button 
+            className="btn-nav-login"
+            onClick={() => navigate("/login")}
+          >
+            Sign In
+          </button>
+        </div>
+      </nav>
 
-/* ========== CLEAN SCROLLBAR ========== */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
+      {/* MAIN CONTENT */}
+      <main className="landing-main">
+        {/* KINETIC HERO SECTION */}
+        <section className="hero-content">
+          <div className="hero-badge">
+            ⚡ Powered by Advanced AI Analysis
+          </div>
+          
+          <h1 className="hero-title">
+            Transform Your Code with{" "}
+            <span className="gradient-text">AI Precision</span>
+          </h1>
+          
+          <p className="hero-description">
+            Analyze complexity, detect errors, and optimize performance instantly. 
+            Built for developers who demand excellence.
+          </p>
 
-::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
-}
+          <div className="hero-stats">
+            <div className="stat-item">
+              <div className="stat-number">50K+</div>
+              <div className="stat-label">Lines Analyzed</div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-number">99.8%</div>
+              <div className="stat-label">Accuracy Rate</div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-number">&lt;2s</div>
+              <div className="stat-label">Avg Response</div>
+            </div>
+          </div>
 
-::-webkit-scrollbar-thumb {
-  background: var(--coral-red);
-}
+          <div className="hero-actions">
+            <button 
+              className="btn-primary"
+              onClick={() => navigate("/login")}
+            >
+              Get Started
+              <span>→</span>
+            </button>
+            <button 
+              className="btn-secondary"
+              onClick={() => navigate("/editor")}
+            >
+              <span>⚡</span>
+              Try Demo
+            </button>
+          </div>
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--coral-dark);
-}
+          <div className="hero-note">
+            <span>✓</span>
+            No credit card required · Free tier available
+          </div>
+        </section>
 
-/* ========== SELECTION ========== */
-::selection {
-  background: var(--coral-red);
-  color: white;
-}
+        {/* FEATURES GRID */}
+        <section className="features-grid">
+          <div className="feature-card">
+            <div className="feature-icon-wrapper">
+              <span className="feature-icon">🎯</span>
+            </div>
+            <h3>Instant Analysis</h3>
+            <p>
+              Real-time complexity detection with O(n) notation. 
+              Know your algorithm's performance before deployment.
+            </p>
+          </div>
 
-/* ========== SIMPLE ANIMATIONS ========== */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+          <div className="feature-card">
+            <div className="feature-icon-wrapper">
+              <span className="feature-icon">🔍</span>
+            </div>
+            <h3>Error Detection</h3>
+            <p>
+              Catch syntax errors, logic flaws, and edge cases. 
+              Ship production-ready code with confidence.
+            </p>
+          </div>
 
-@keyframes slideIn {
-  from { transform: translateX(-20px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
+          <div className="feature-card">
+            <div className="feature-icon-wrapper">
+              <span className="feature-icon">⚡</span>
+            </div>
+            <h3>AI Optimization</h3>
+            <p>
+              Get intelligent refactoring suggestions to improve 
+              efficiency and maintainability automatically.
+            </p>
+          </div>
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+          <div className="feature-card">
+            <div className="feature-icon-wrapper">
+              <span className="feature-icon">🚀</span>
+            </div>
+            <h3>Multi-Language</h3>
+            <p>
+              Support for C++, Java, Python, C, and JavaScript. 
+              One platform for all your development needs.
+            </p>
+          </div>
 
-/* ========== UTILITY CLASSES ========== */
-.fade-in {
-  animation: fadeIn 0.3s ease;
-}
+          <div className="feature-card">
+            <div className="feature-icon-wrapper">
+              <span className="feature-icon">📊</span>
+            </div>
+            <h3>Quality Scoring</h3>
+            <p>
+              Comprehensive metrics from 0-100 measuring code 
+              health, readability, and performance.
+            </p>
+          </div>
 
-/* Remove all gradients and shadows by default */
-button, .card, .panel {
-  box-shadow: none;
-  background-image: none;
+          <div className="feature-card">
+            <div className="feature-icon-wrapper">
+              <span className="feature-icon">💾</span>
+            </div>
+            <h3>Project Management</h3>
+            <p>
+              Organize code snippets into projects. Track progress 
+              and improvements over time.
+            </p>
+          </div>
+        </section>
+
+        {/* CODE PREVIEW SECTION */}
+        <section className="code-preview-section">
+          <h2 className="section-title">
+            From Messy to Optimized
+          </h2>
+
+          <div className="preview-container">
+            {/* BEFORE */}
+            <div className="preview-window">
+              <div className="window-header">
+                <div className="window-dots">
+                  <div className="dot dot-red"></div>
+                  <div className="dot dot-yellow"></div>
+                  <div className="dot dot-green"></div>
+                </div>
+                <div className="window-title">before.cpp</div>
+              </div>
+              <div className="window-content">
+                <pre className="code-sample">{`int sum = 0;
+for (int i = 0; i < n; i++) {
+  for (int j = 0; j < n; j++) {
+    sum += arr[i] * arr[j];
+  }
+}`}</pre>
+              </div>
+            </div>
+
+            {/* ARROW */}
+            <div className="preview-arrow">→</div>
+
+            {/* AFTER */}
+            <div className="preview-results">
+              <div className="result-card">
+                <div className="result-header">
+                  <span>📊</span>
+                  Complexity
+                </div>
+                <div className="result-value">O(n²)</div>
+              </div>
+
+              <div className="result-card">
+                <div className="result-header">
+                  <span>💡</span>
+                  Suggestions
+                </div>
+                <ul className="result-list">
+                  <li>Consider caching arr[i]</li>
+                  <li>Use single-pass algorithm</li>
+                  <li>Reduce nested loops</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA SECTION */}
+        <section className="cta-section">
+          <h2 className="cta-title">
+            Ready to Level Up Your Code?
+          </h2>
+          <p className="cta-description">
+            Join thousands of developers optimizing their code with AI
+          </p>
+          <div className="cta-buttons">
+            <button 
+              className="btn-cta-primary"
+              onClick={() => navigate("/login")}
+            >
+              Start Free Trial
+            </button>
+            <button 
+              className="btn-cta-secondary"
+              onClick={() => navigate("/editor")}
+            >
+              View Demo
+            </button>
+          </div>
+        </section>
+      </main>
+
+      {/* FOOTER */}
+      <footer className="landing-footer">
+        <div className="footer-brand">
+          <span>⚡</span>
+          CodeRefine
+        </div>
+        <p className="footer-text">
+          © 2024 CodeRefine. Built with precision for developers.
+        </p>
+      </footer>
+    </div>
+  )
 }

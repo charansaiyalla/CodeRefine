@@ -4,6 +4,11 @@ import Speedometer from "./Speedometer"
 export default function AnalysisPanel({ analysis, loading, error, onApplyOptimized }) {
   const [showOptimized, setShowOptimized] = useState(false)
   const [activeTab, setActiveTab] = useState("time") // time or space
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   if (loading) {
     return (
@@ -40,7 +45,7 @@ export default function AnalysisPanel({ analysis, loading, error, onApplyOptimiz
               <span>Instant complexity analysis</span>
             </div>
             <div className="empty-feature">
-              <span>🐛</span>
+              <span>🛡️</span>
               <span>Error detection</span>
             </div>
             <div className="empty-feature">
@@ -121,7 +126,7 @@ export default function AnalysisPanel({ analysis, loading, error, onApplyOptimiz
       {analysis.errors && analysis.errors.length > 0 && (
         <div className="analysis-card error-card-section">
           <div className="card-header">
-            <span className="card-icon">🐛</span>
+            <span className="card-icon">🛡️</span>
             <h3>Errors Found</h3>
           </div>
           <ul className="bullet-list error-list">

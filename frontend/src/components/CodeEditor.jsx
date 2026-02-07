@@ -68,6 +68,10 @@ export default function CodeEditor({ onRefine, code, setCode, loading }) {
             readOnly: loading,
             cursorStyle: 'line',
             wordWrap: 'on',
+            smoothScrolling: true,
+            cursorBlinking: 'smooth',
+            cursorSmoothCaretAnimation: true,
+            fontLigatures: true,
           }}
         />
       </div>
